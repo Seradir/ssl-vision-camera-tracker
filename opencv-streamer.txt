@@ -1,0 +1,15 @@
+python -m pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless
+sudo apt update
+sudo apt install -y \
+    python3-opencv \
+    gstreamer1.0-tools \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-libav \
+    gstreamer1.0-opencv
+python3 - <<'PY'
+import cv2
+print(cv2.__file__)
+print(cv2.getBuildInformation())
+PY
