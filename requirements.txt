@@ -1,0 +1,64 @@
+# Python dependencies for ball_zoom_stream.py
+# Install with:
+#   python3 -m venv .venv
+#   source .venv/bin/activate
+#   pip install -r requirements.txt
+
+numpy>=1.24
+protobuf>=4.25
+
+# NOTE:
+# OpenCV is intentionally NOT installed via pip here.
+# On Ubuntu, use the distro package 'python3-opencv' so that OpenCV
+# is linked against the system GStreamer installation.
+# The program depends on cv2.CAP_GSTREAMER.
+
+# ===============================
+# Plain Ubuntu setup notes
+# ===============================
+# 1) Enable Universe if needed:
+#    sudo add-apt-repository universe
+#    sudo apt update
+#
+# 2) Install system packages:
+#    sudo apt install -y \
+#        python3 python3-venv python3-pip python3-opencv python3-protobuf \
+#        gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+#        gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-opencv \
+#        v4l2loopback-dkms v4l2loopback-utils v4l-utils \
+#        build-essential dkms linux-headers-$(uname -r)
+#
+# 3) Install Blackmagic Desktop Video / DeckLink software + SDK manually.
+#    Download from Blackmagic Design and install the current Linux packages.
+#    This is required for DeckLink support and for the GStreamer DeckLink source.
+#
+# 4) Create Python venv and install pip packages:
+#    python3 -m venv .venv
+#    source .venv/bin/activate
+#    pip install -r requirements.txt
+#
+# 5) Create virtual video device:
+#    sudo modprobe v4l2loopback video_nr=20 card_label="ball_zoom" exclusive_caps=1
+#
+# 6) Verify DeckLink GStreamer source exists:
+#    gst-inspect-1.0 decklinkvideosrc
+#
+# 7) Verify OpenCV has GStreamer enabled:
+#    python3 - <<'PY'
+#    import cv2
+#    print('GStreamer: YES' if 'GStreamer:                   YES' in cv2.getBuildInformation() else cv2.getBuildInformation())
+#    PY
+#
+# 8) Example start:
+#    python3 ball_zoom_stream.py \
+#        --pb-port 10010 \
+#        --pb-multicast-group 224.5.23.2 \
+#        --decklink-device 0 \
+#        --decklink-connection sdi \
+#        --decklink-mode 1080p25 \
+#        --output-device /dev/video20 \
+#        --zoom-factor 2.0 \
+#        --map 140 120 -4.5 -3.0 \
+#        --map 1780 120  4.5 -3.0 \
+#        --map 140 960 -4.5  3.0 \
+#        --map 1780 960  4.5  3.0
